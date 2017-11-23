@@ -2210,6 +2210,16 @@
 					groups[optgroup].appendChild(option_html);
 				}
 			}
+			
+			// add optgroups without options
+			if (self.settings.allowEmptyOptionGroup && self.optgroups) {
+				for (var optgroup in self.optgroups) {					
+					if (!groups.hasOwnProperty(optgroup)) {
+						groups[optgroup] = document.createDocumentFragment();
+						groups_order.push(optgroup);
+					}
+				}
+			}
 	
 			// sort optgroups
 			if (this.settings.lockOptgroupOrder) {
@@ -2224,7 +2234,7 @@
 			html = document.createDocumentFragment();
 			for (i = 0, n = groups_order.length; i < n; i++) {
 				optgroup = groups_order[i];
-				if (self.optgroups.hasOwnProperty(optgroup) && groups[optgroup].childNodes.length) {
+				if (self.optgroups.hasOwnProperty(optgroup) && (self.settings.allowEmptyOptionGroup || groups[optgroup].childNodes.length)) {
 					// render the optgroup header and options within it,
 					// then pass it to the wrapper template
 					html_children = document.createDocumentFragment();
@@ -3287,6 +3297,7 @@
 		selectOnTab: false,
 		preload: false,
 		allowEmptyOption: false,
+		allowEmptyOptionGroup: false,
 		closeAfterSelect: false,
 	
 		scrollDuration: 60,
