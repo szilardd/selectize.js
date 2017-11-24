@@ -2234,11 +2234,16 @@
 			html = document.createDocumentFragment();
 			for (i = 0, n = groups_order.length; i < n; i++) {
 				optgroup = groups_order[i];
-				if (self.optgroups.hasOwnProperty(optgroup) && (self.settings.allowEmptyOptionGroup || groups[optgroup].childNodes.length)) {
+				var hasOptions = groups[optgroup].childNodes.length;
+				
+				if (self.optgroups.hasOwnProperty(optgroup) && (self.settings.allowEmptyOptionGroup || hasOptions)) {
 					// render the optgroup header and options within it,
 					// then pass it to the wrapper template
+					
+					var additionalHeaderClassName = !hasOptions ? 'optgroup-header-no-options' : null;
+					
 					html_children = document.createDocumentFragment();
-					html_children.appendChild(self.render('optgroup_header', self.optgroups[optgroup]));
+					html_children.appendChild(self.render('optgroup_header', self.optgroups[optgroup], additionalHeaderClassName));
 					html_children.appendChild(groups[optgroup]);
 	
 					html.appendChild(self.render('optgroup', $.extend({}, self.optgroups[optgroup], {
@@ -3194,7 +3199,7 @@
 		 * @param {object} data
 		 * @returns {string}
 		 */
-		render: function(templateName, data) {
+		render: function(templateName, data, cssClass) {
 			var value, id, label;
 			var html = '';
 			var cache = false;
@@ -3229,6 +3234,10 @@
 			}
 			if (templateName === 'option' || templateName === 'item') {
 				html.attr('data-value', value || '');
+			}
+			
+			if (cssClass) {
+				html.addClass(cssClass);
 			}
 	
 			// update cache
